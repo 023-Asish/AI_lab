@@ -1,0 +1,275 @@
+------------------------------water jug---BFS--------------
+
+from collections import defaultdict 
+visited = defaultdict(lambda: False) 
+J1, J2, L = 10, 3, 5
+def Water_Jug_problem(X, Y):
+    if (X == L and Y == 0) or (Y == L and X == 0): 
+        print("(",X, ", ",Y,")",sep="") 
+        return True
+    if visited[(X, Y)] == False: 
+        print("(",X, ", ",Y,")",sep="") 
+        visited[(X, Y)] = True
+        return (Water_Jug_problem(0, Y) or
+                Water_Jug_problem(X, 0) or
+                Water_Jug_problem(J1, Y) or
+                Water_Jug_problem(X, J2) or
+                Water_Jug_problem(X + min(Y, (J1-X)),Y - min(Y, (J1-X))) or
+                Water_Jug_problem(X - min(X, (J2-Y)),Y + min(X, (J2-Y)))) 
+    else: 
+        return False
+        
+print("Path is as Follow:\n") 
+Water_Jug_problem(0, 0) 
+
+
+---------------------------------BFS---------------------------------------------
+
+graph ={
+    '5':['3','7'],
+    '3':['4','6'],
+    '7':['1','2'],
+    '4':[],
+    '6':[],
+    '1':[],
+    '2':[]
+}
+visited=[]
+queue=[]
+
+def bfs(graph,node):
+    visited.append(node)
+    queue.append(node)
+    while queue:
+        m = queue.pop(0)
+        print(m)
+        for n in graph[m]:
+            if n not in visited:
+                visited.append(n)
+                queue.append(n)
+
+print ('bfs sequence is :')
+bfs(graph,'5')
+
+---------------------------------DFS--------------------------------------------
+graph ={
+    '5':['3','7'],
+    '3':['4','6'],
+    '7':['1','2'],
+    '4':[],
+    '6':[],
+    '1':[],
+    '2':[]
+}
+visited=[]
+def dfs(graph,node):
+    if node not in visited:
+        visited.append(node)
+        print(node)
+        for n in graph[node]:
+            dfs(graph,n)
+
+print ('dfs sequence is :')
+dfs(graph,'5')
+
+-----------------------------8 Queen---------------------------------------------
+board = [
+    ['-','-','-','-','-','-','-','-'],
+    ['-','-','-','-','-','-','-','-'],
+    ['-','-','-','-','-','-','-','-'],
+    ['-','-','-','-','-','-','-','-'],
+    ['-','-','-','-','-','-','-','-'],
+    ['-','-','-','-','-','-','-','-'],
+    ['-','-','-','-','-','-','-','-'],
+    ['-','-','-','-','-','-','-','-']
+    ]
+    
+def isSafe(r,c):
+    # check same column
+    for i in range (r):
+        if board[i][c]=='Q':
+            return False
+    # check \ diagonal
+    i=r-1
+    j=c-1
+    while i>=0 and j>=0:
+        if board[i][j]=='Q':
+            return False
+        
+        i=i-1
+        j=j-1
+    # check for / diagonal
+    i=r-1
+    j=c+1
+    while i>=0 and j<8:
+        if board[i][j]=='Q':
+            return False
+        i=i-1
+        j=j+1
+    
+    return True
+    
+def printSol():
+    for i in range (8):
+        for j in range (8):
+            print(board[i][j],end =" ")
+        print()
+        
+    print("=======================================")
+            
+
+def solve (r):
+    if r==8:
+        printSol()
+        return
+    
+    for i in range(8):
+            if isSafe(r,i):
+                board[r][i] = 'Q'
+                solve(r+1)
+                board[r][i]= '-'
+    
+solve(0)
+    
+----------------------------------- wampus world ----------------------------------------
+
+board = [
+    ['-','b','P','b'],
+    ['s','-','b','-'],
+    ['w','s','g','b'],
+    ['s','-','b','P'],
+    ]
+
+def sol():
+    alive=1
+    gold =0
+    x,y=0,0
+    
+    while alive==1:
+        print("possible choices are :")
+        if x+1<4 and board[x+1][y]!='#':
+            print(x+1,',',y)
+        if y+1<4 and board[x][y+1]!='#':
+            print(x,',',y+1)
+        if x-1>=0 and board[x-1][y]!='#':
+            print(x-1,',',y)
+        if y-1>=0 and board[x][y-1]!='#':
+            print(x,',',y-1)
+        
+        print("choice x value: ")
+        ux = int(input())
+        
+        print("choice y value: ")
+        uy = int(input())
+        
+        if gold ==1 and ux==0 and uy==0:
+            print("You Won!")
+            break
+        if(board[ux][uy]=='p'):
+            print('its pit')
+            alive=0
+            break
+        
+        if(board[ux][uy]=='w'):
+            print('its wampus')
+            alive=0
+            break
+
+        if(board[ux][uy]=='g'):
+            print('its Gold...now return')
+            gold =1
+        if(board[ux][uy]=='s'):
+            print('its stench')
+        if(board[ux][uy]=='b'):
+            print('its breez')
+            
+        x=ux
+        y=uy
+            
+
+sol()
+
+----------------------------Naive bayes-----------------------------------------
+from sklearn.datasets import load_iris
+iris = load_iris()
+x = iris.data
+y=iris.target
+
+from sklearn.naive_bayes import GaussianNB
+model = GaussianNB()
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size =0.3,shuffle=True,random_state=1)
+model.fit(x_train,y_train)
+
+yp = model.predict(x_test)
+
+from sklearn import metrics
+print(metrics.accuracy_score(y_test,yp)*100)
+    
+
+--------------------------------Decision tree------------------------------------------------
+    
+from sklearn import tree
+from sklearn.datasets import make_classification
+
+x,y = make_classification(100,5,n_classes =2, shuffle=True,random_state=1)
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.3,shuffle=True,random_state=1)
+
+
+model = tree.DecisionTreeClassifier()
+model.fit(x_train,y_train)
+yp=model.predict(x_test)
+# print(yp)
+
+from sklearn import metrics
+print(metrics.accuracy_score(y_test,yp)*100)
+tree.plot_tree(model)
+
+-------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
